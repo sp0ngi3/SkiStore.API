@@ -20,7 +20,7 @@ public class BaseApiController:ControllerBase
     }
     private static void CheckAccessToEnv()
     {
-        if (!Enviroment.Enviroment.IsEnvValid())
+        if (!StaticValues.StaticValues.IsEnvValid())
         {
             logger.Error("ERROR => Problem loading the variables!");
             throw new Exception("Problem loading the variables!");
