@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  skistore.api:
+    image: ${DOCKER_REGISTRY-}skistoreapi
+    build:
+      context: .
+      dockerfile: SkiStore.API/Dockerfile
+    ports:
+        - 12345:80
+    env_file:
+        - Enviroment/.env
