@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using NLog.Web;
+using SkiStore.API.Context;
 using SkiStore.API.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,12 @@ builder.Services.AddSwaggerGen();
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Logging.AddNLog("NLog.config");
+
+
+builder.Services.AddDbContext<SkiStoreContext>(opt =>
+{
+    opt.UseSqlite(builder.Configuration.GetConnectionString("DefualtConnection"));
+});
 
 WebApplication app = builder.Build();
 
