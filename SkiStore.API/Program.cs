@@ -19,10 +19,9 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 builder.Logging.AddNLog("NLog.config");
 
 
-builder.Services.AddDbContext<SkiStoreContext>(opt =>
-{
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefualtConnection"));
-});
+builder.Services.AddDbContext<SkiStoreContext>(options =>
+options.UseSqlite("Data source=skistore.db"));
+
 
 WebApplication app = builder.Build();
 

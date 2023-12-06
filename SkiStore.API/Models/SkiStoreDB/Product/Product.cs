@@ -9,7 +9,7 @@
 
         public string Description { get; set; }
 
-        public long Price { get; set; } 
+        public float Price { get; set; } 
 
         public string PictureUrl {  get; set; } 
 

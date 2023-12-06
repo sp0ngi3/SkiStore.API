@@ -7,7 +7,7 @@ namespace SkiStore.API.Context
     {
        public SkiStoreContext(DbContextOptions options):base(options) 
         {
-           
+            
         }
 
         public DbSet<Product> Products { get; set; }    
