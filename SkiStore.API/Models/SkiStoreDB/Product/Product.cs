@@ -17,6 +17,6 @@
 
         public string Brand { get; set; }
 
-        public int QuantityInStockk { get; set; }
+        public int QuantityInStock { get; set; }
     }
 }

@@ -10,8 +10,8 @@ using SkiStore.API.Context;
 namespace SkiStore.API.Migrations
 {
     [DbContext(typeof(SkiStoreContext))]
-    [Migration("20231206111423_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231206161204_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,7 +44,7 @@ namespace SkiStore.API.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("QuantityInStockk")
+                    b.Property<int>("QuantityInStock")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Type")

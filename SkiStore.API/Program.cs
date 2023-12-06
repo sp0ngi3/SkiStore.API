@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using SkiStore.API.Context;
 using SkiStore.API.Middleware;
+using SkiStore.API.Utill;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -39,5 +40,19 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Seeding
+IServiceScope scope = app.Services.CreateScope();
+SkiStoreContext context =scope.ServiceProvider.GetRequiredService<SkiStoreContext>();
+ILogger<Program> logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+try
+{
+    context.Database.Migrate();
+    DbInitializer.Initialize(context);  
+}
+catch (Exception ex) 
+{
+    logger.LogError(ex, "A prolem occcured during migration");
+}
 
 app.Run();
