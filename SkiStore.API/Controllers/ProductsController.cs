@@ -19,7 +19,6 @@ namespace SkiStore.API.Controllers
         public async Task <ActionResult<APIResponse<List<GetProductDTO>>>> GetAllProducts()
         {
             CheckControllerData();
-
             try 
             {
                 APIResponse<List<GetProductDTO>> response = await productService.GetAllProducts();
@@ -41,6 +40,33 @@ namespace SkiStore.API.Controllers
                 ProvideLog(Response.GetResponseInfo());
                 return StatusCode(500, Response);
 
+            }
+        }
+
+        [HttpGet("products/{id}")]
+        public async Task<ActionResult<APIResponse<GetProductDTO>>> GetProductById(int id)
+        {
+            CheckControllerData();
+            try 
+            {
+                APIResponse<GetProductDTO> response = await productService.GetProductById(id);
+
+                ProvideLog(response.GetResponseInfo());
+
+                return DetermineResponseType(response);
+            }
+            catch (Exception ex) 
+            {
+                APIResponse<string> Response = new()
+                {
+                    IsSuccessful = false,
+                    StatusCode = 500,
+                    Data = null,
+                    ErrorMessage = ex.Message
+                };
+
+                ProvideLog(Response.GetResponseInfo());
+                return StatusCode(500, Response);
             }
         }
     }
