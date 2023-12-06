@@ -13,6 +13,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Auto Mapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 
 // NLog Configuration
 builder.Logging.ClearProviders();
