@@ -9,7 +9,7 @@ namespace SkiStore.API.Utill
         {
             if(context.Products.Any()) { return; }
 
-            List<Product> products =new List<Product>()
+            List<Product> products =new()
             {
                 new Product
                 {

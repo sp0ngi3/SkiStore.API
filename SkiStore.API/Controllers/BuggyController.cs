@@ -72,4 +72,22 @@ public class BuggyController:BaseApiController
     {
         throw new Exception("This is a server error !");
     }
+
+    [HttpGet("custom-server-error")]
+    public ActionResult <APIResponse<string>> GetCustomServerError() 
+    {
+        CheckControllerData();
+
+        APIResponse<string> APIResponse = new()
+        {
+            Data = string.Empty,
+            StatusCode = 500,
+            IsSuccessful = false,
+            ErrorMessage = "This is an example of custom exception"
+        };
+
+        ProvideLog(APIResponse.GetResponseInfo());
+
+        return DetermineResponseType(APIResponse);
+    }
 }
