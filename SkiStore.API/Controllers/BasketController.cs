@@ -50,7 +50,13 @@ public class BasketController:BaseApiController
 
         try
         {
-            APIResponse<string> response = await basketService.AddItemToBasket(productId,quantity);
+            APIResponse<string> response = await basketService.AddItemToBasket(Request.Cookies["buyerId"]!,productId,quantity);
+
+            if(response.IsSuccessful) 
+            {
+                CookieOptions cookieOptions =new CookieOptions { IsEssential = true , Expires=DateTime.Now.AddDays(30)};
+                Response.Cookies.Append(StaticValues.StaticValues.BUYERID,response.Data!,cookieOptions);
+            }
  
             ProvideLog(response.GetResponseInfo());
 
@@ -72,13 +78,13 @@ public class BasketController:BaseApiController
     }
 
     [HttpDelete]
-    public async Task<ActionResult<APIResponse<string>>> RemoveBasketItem(int productId, int quantity)
+    public async Task<ActionResult<APIResponse<bool>>> RemoveBasketItem(int productId, int quantity)
     {
         CheckControllerData();
 
         try
         {
-            APIResponse<string> response = await basketService.RemoveBasketItem(productId, quantity);
+            APIResponse<bool> response = await basketService.RemoveBasketItem(Request.Cookies["buyerId"]!, productId, quantity);
 
             ProvideLog(response.GetResponseInfo());
 

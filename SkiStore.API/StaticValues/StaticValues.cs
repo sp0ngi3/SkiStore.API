@@ -5,6 +5,8 @@ namespace SkiStore.API.StaticValues
     public static class StaticValues
     {
         public static string MODE { get => GetEnvVariable("MODE"); }
+
+        public const string BUYERID = "BuyerId";
         private static string GetEnvVariable(string variableName)
         {
             try
