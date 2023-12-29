@@ -7,15 +7,15 @@ using SkiStore.API.Services.SkiStoreDB;
 
 namespace SkiStore.API.Controllers;
 
-public class BasketController:BaseApiController
+public class BasketController : BaseApiController
 {
     private readonly BasketService basketService;
-    public BasketController(SkiStoreContext context , IMapper mapper)
+    public BasketController(SkiStoreContext context, IMapper mapper)
     {
-        basketService=new BasketService(context,mapper);
+        basketService = new BasketService(context, mapper);
     }
 
-    [HttpGet]
+    [HttpGet("basket")]
     public async Task<ActionResult<APIResponse<ReturnBasketDTO>>> GetBasket()
     {
         CheckControllerData();
@@ -28,7 +28,7 @@ public class BasketController:BaseApiController
 
             return DetermineResponseType(response);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             APIResponse<string> Response = new()
             {
@@ -43,8 +43,8 @@ public class BasketController:BaseApiController
         }
     }
 
-    [HttpPost]
-    public async Task<ActionResult<APIResponse<string>>> AddItemToBasket(int productId , int quantity)
+    [HttpPost("basket")]
+    public async Task<ActionResult<APIResponse<string>>> AddItemToBasket([FromQuery] int productId, [FromQuery] int quantity)
     {
         CheckControllerData();
 
@@ -77,8 +77,8 @@ public class BasketController:BaseApiController
         }
     }
 
-    [HttpDelete]
-    public async Task<ActionResult<APIResponse<bool>>> RemoveBasketItem(int productId, int quantity)
+    [HttpDelete("basket")]
+    public async Task<ActionResult<APIResponse<bool>>> RemoveBasketItem([FromQuery] int productId, [FromQuery] int quantity)
     {
         CheckControllerData();
 
