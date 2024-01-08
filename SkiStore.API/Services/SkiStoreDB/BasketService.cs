@@ -82,15 +82,6 @@ public class BasketService
         {
             APIResponse<string> APIResponse = new();
 
-            if (buyerID == null)
-            {
-                APIResponse.IsSuccessful = false;
-                APIResponse.StatusCode = 400;
-                APIResponse.ErrorMessage = $"- BUYER ID  MISSING";
-
-                return APIResponse;
-            }
-
             Models.SkiStoreDB.Basket.Basket? basket = await FetchBasket(buyerID) ?? CreateBasket();
 
             Models.SkiStoreDB.Product.Product? product =await context.Products.FindAsync(productId);
@@ -113,7 +104,7 @@ public class BasketService
                 APIResponse.IsSuccessful = true;
                 APIResponse.StatusCode = 201;
                 APIResponse.SuccessMessage = $"ITEM {productId} ADDED TO BASKET";
-                APIResponse.Data = buyerID.ToString();  
+                APIResponse.Data = basket.BuyerId.ToString();  
 
                 return APIResponse;
             }
@@ -203,11 +194,17 @@ public class BasketService
 
    private async Task<Basket> FetchBasket(string BuyerID)
     {
-        return await context.Baskets
-            .Include(x => x.Items)
-            .ThenInclude(x => x.Product)
-            .Where(x => x.BuyerId == BuyerID)
-            .FirstOrDefaultAsync();
+        if(string.IsNullOrWhiteSpace(BuyerID))
+        {
+            return null;
+        }
+        
+            return await context.Baskets
+                .Include(i => i.Items)
+                .ThenInclude(p => p.Product)
+                .Where(x => x.BuyerId == BuyerID)
+                .FirstOrDefaultAsync();
+       
     }
 
     private Basket CreateBasket()
