@@ -77,14 +77,14 @@ public class BasketController : BaseApiController
         }
     }
 
-    [HttpDelete("basket")]
-    public async Task<ActionResult<APIResponse<bool>>> RemoveBasketItem([FromQuery] int productId, [FromQuery] int quantity)
+    [HttpDelete("basket/{buyerId}")]
+    public async Task<ActionResult<APIResponse<bool>>> RemoveBasketItem([FromQuery] int productId, [FromQuery] int quantity, string? BuyerId = "Undefined")
     {
         CheckControllerData();
 
         try
         {
-            APIResponse<bool> response = await basketService.RemoveBasketItem(Request.Cookies["buyerId"]!, productId, quantity);
+            APIResponse<bool> response = await basketService.RemoveBasketItem(BuyerId, productId, quantity);
 
             ProvideLog(response.GetResponseInfo());
 
