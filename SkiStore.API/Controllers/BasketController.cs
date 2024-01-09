@@ -43,14 +43,14 @@ public class BasketController : BaseApiController
         }
     }
 
-    [HttpPost("basket")]
-    public async Task<ActionResult<APIResponse<string>>> AddItemToBasket([FromQuery] int productId, [FromQuery] int quantity)
+    [HttpPost("basket/{buyerId}")]
+    public async Task<ActionResult<APIResponse<string>>> AddItemToBasket([FromQuery] int productId, [FromQuery] int quantity , string? BuyerId="Undefined")
     {
         CheckControllerData();
 
         try
         {
-            APIResponse<string> response = await basketService.AddItemToBasket(Request.Cookies["buyerId"]!,productId,quantity);
+            APIResponse<string> response = await basketService.AddItemToBasket(BuyerId, productId,quantity);
 
             if(response.IsSuccessful) 
             {

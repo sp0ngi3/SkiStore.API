@@ -8,5 +8,5 @@ public class ReturnBasketDTO
 
     public string BuyerId { get; set; }
 
-    public List<BasketItemDTO> Items = new();
+    public List<BasketItemDTO> Items { get; set; } = new();
 }

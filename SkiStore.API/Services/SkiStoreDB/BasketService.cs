@@ -192,7 +192,7 @@ public class BasketService
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(BuyerID))
+            if (string.IsNullOrWhiteSpace(BuyerID) || BuyerID == null || BuyerID.ToLower()=="undefined")
             {
                 return null;
             }
