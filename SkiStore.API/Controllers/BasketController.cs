@@ -15,14 +15,14 @@ public class BasketController : BaseApiController
         basketService = new BasketService(context, mapper);
     }
 
-    [HttpGet("basket")]
-    public async Task<ActionResult<APIResponse<ReturnBasketDTO>>> GetBasket()
+    [HttpGet("basket/{buyerId}")]
+    public async Task<ActionResult<APIResponse<ReturnBasketDTO>>> GetBasket(string buyerId)
     {
         CheckControllerData();
 
         try
         {
-            APIResponse<ReturnBasketDTO> response = await basketService.GetBasket(Request.Cookies["buyerId"]!);
+            APIResponse<ReturnBasketDTO> response = await basketService.GetBasket(buyerId);
 
             ProvideLog(response.GetResponseInfo());
 

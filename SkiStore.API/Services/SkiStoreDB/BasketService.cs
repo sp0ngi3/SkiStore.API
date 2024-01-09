@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NLog.Web.LayoutRenderers;
 using SkiStore.API.Context;
 using SkiStore.API.DTOs.SkiStoreDB.Basket;
-using SkiStore.API.DTOs.SkiStoreDB.Product;
 using SkiStore.API.Models.API;
 using SkiStore.API.Models.SkiStoreDB.Basket;
 
@@ -16,14 +12,14 @@ public class BasketService
     private readonly SkiStoreContext context;
     private readonly IMapper mapper;
 
-    public BasketService(SkiStoreContext context , IMapper mapper )
+    public BasketService(SkiStoreContext context, IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;
     }
 
 
-    
+
     public async Task<APIResponse<ReturnBasketDTO>> GetBasket(string buyerID)
     {
         try
@@ -39,9 +35,9 @@ public class BasketService
                 return APIResponse;
             }
 
-            Models.SkiStoreDB.Basket.Basket? basket =  await FetchBasket(buyerID);
+            Models.SkiStoreDB.Basket.Basket? basket = await FetchBasket(buyerID);
 
-            if(basket == null)
+            if (basket == null)
             {
                 APIResponse.IsSuccessful = false;
                 APIResponse.StatusCode = 404;
@@ -50,7 +46,7 @@ public class BasketService
                 return APIResponse;
             }
 
-            ReturnBasketDTO basketDTO =mapper.Map<ReturnBasketDTO>(basket);
+            ReturnBasketDTO basketDTO = mapper.Map<ReturnBasketDTO>(basket);
 
             APIResponse.IsSuccessful = true;
             APIResponse.StatusCode = 200;
@@ -60,7 +56,7 @@ public class BasketService
 
             return APIResponse;
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             APIResponse<ReturnBasketDTO> APIResponse = new()
             {
@@ -74,9 +70,9 @@ public class BasketService
         }
     }
 
-    
 
-    public async Task<APIResponse<string>> AddItemToBasket(string buyerID ,int productId , int quantity)
+
+    public async Task<APIResponse<string>> AddItemToBasket(string buyerID, int productId, int quantity)
     {
         try
         {
@@ -84,9 +80,9 @@ public class BasketService
 
             Models.SkiStoreDB.Basket.Basket? basket = await FetchBasket(buyerID) ?? CreateBasket();
 
-            Models.SkiStoreDB.Product.Product? product =await context.Products.FindAsync(productId);
+            Models.SkiStoreDB.Product.Product? product = await context.Products.FindAsync(productId);
 
-            if(product == null)
+            if (product == null)
             {
                 APIResponse.IsSuccessful = false;
                 APIResponse.StatusCode = 404;
@@ -95,20 +91,20 @@ public class BasketService
                 return APIResponse;
             }
 
-            basket.AddItem(product,quantity);
+            basket.AddItem(product, quantity);
 
             bool changesMade = await context.SaveChangesAsync() > 0;
 
-            if(changesMade) 
+            if (changesMade)
             {
                 APIResponse.IsSuccessful = true;
                 APIResponse.StatusCode = 201;
                 APIResponse.SuccessMessage = $"ITEM {productId} ADDED TO BASKET";
-                APIResponse.Data = basket.BuyerId.ToString();  
+                APIResponse.Data = basket.BuyerId.ToString();
 
                 return APIResponse;
             }
-            else 
+            else
             {
                 APIResponse.IsSuccessful = false;
                 APIResponse.StatusCode = 400;
@@ -132,7 +128,7 @@ public class BasketService
         }
     }
 
-    public async Task<APIResponse<bool>> RemoveBasketItem(string buyerID , int productId ,int quantity)
+    public async Task<APIResponse<bool>> RemoveBasketItem(string buyerID, int productId, int quantity)
     {
         try
         {
@@ -149,18 +145,18 @@ public class BasketService
 
             Basket basket = await FetchBasket(buyerID);
 
-            if (basket==null)
+            if (basket == null)
             {
                 APIResponse.IsSuccessful = false;
                 APIResponse.StatusCode = 404;
                 APIResponse.ErrorMessage = $"- BASKET NOT FOUND";
             }
 
-            basket.RemoveItem(productId,quantity);
+            basket.RemoveItem(productId, quantity);
 
             bool changesMade = await context.SaveChangesAsync() > 0;
 
-            if(changesMade) 
+            if (changesMade)
             {
                 APIResponse.IsSuccessful = true;
                 APIResponse.StatusCode = 200;
@@ -176,9 +172,9 @@ public class BasketService
                 return APIResponse;
             }
 
-            
+
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             APIResponse<bool> APIResponse = new()
             {
@@ -192,19 +188,28 @@ public class BasketService
         }
     }
 
-   private async Task<Basket> FetchBasket(string BuyerID)
+    private async Task<Basket> FetchBasket(string BuyerID)
     {
-        if(string.IsNullOrWhiteSpace(BuyerID))
+        try
         {
+            if (string.IsNullOrWhiteSpace(BuyerID))
+            {
+                return null;
+            }
+
+            return await context.Baskets
+          .Include(i => i.Items)
+          .ThenInclude(p => p.Product)
+          .FirstOrDefaultAsync(basket => basket.BuyerId == BuyerID);
+
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine(ex.Message);  
             return null;
         }
-        
-            return await context.Baskets
-                .Include(i => i.Items)
-                .ThenInclude(p => p.Product)
-                .Where(x => x.BuyerId == BuyerID)
-                .FirstOrDefaultAsync();
-       
+
+
     }
 
     private Basket CreateBasket()
@@ -214,7 +219,7 @@ public class BasketService
         //CookieOptions cookieOptions =new CookieOptions {IsEssential=true,Expires=DateTime.Now.AddDays(30)};
         //Reponse.Cookies.Append(StaticValues.StaticValues.BUYERID,buyerId,cookieOptions)
 
-        Basket basket = new Basket { BuyerId = buyerId };
+        Basket basket = new() { BuyerId = buyerId };
 
         context.Baskets.Add(basket);
 

@@ -6,32 +6,25 @@ public class Basket
 
     public string BuyerId { get; set; }
 
-    public List<BasketItem> Items = new();
+    public List<BasketItem> Items { get; set; } = new();
 
-    public void AddItem(Product.Product product , int quantity)
+    public void AddItem(Models.SkiStoreDB.Product.Product product, int quantity)
     {
-        if (Items.All(item=>item.Id!=product.Id))
+        if (Items.All(item => item.ProductId != product.Id))
         {
             Items.Add(new BasketItem { Product = product, Quantity = quantity });
-        }
-
-        BasketItem? existingItem =Items.FirstOrDefault(x=>x.Product.Id==product.Id);
-
-        if (existingItem!=null) 
-        {
-            existingItem.Quantity += quantity;
-        }
-    }
-
-    public void RemoveItem(int productId, int quantity)
-    {
-        BasketItem? item = Items.FirstOrDefault(x => x.ProductId == productId);
-        if (item == null)
-        {
             return;
         }
-        item.Quantity -= quantity;
 
-        if (item.Quantity == 0) { Items.Remove(item); }
+        var existingItem = Items.FirstOrDefault(item => item.ProductId == product.Id);
+        if (existingItem != null) existingItem.Quantity += quantity;
+    }
+
+    public void RemoveItem(int productId, int quantity = 1)
+    {
+        var item = Items.FirstOrDefault(basketItem => basketItem.ProductId == productId);
+        if (item == null) return;
+        item.Quantity -= quantity;
+        if (item.Quantity == 0) Items.Remove(item);
     }
 }
