@@ -16,12 +16,12 @@ namespace SkiStore.API.Controllers
         }
 
         [HttpGet("products")]
-        public async Task <ActionResult<APIResponse<List<GetProductDTO>>>> GetAllProducts()
+        public async Task <ActionResult<APIResponse<List<GetProductDTO>>>> GetAllProducts([FromQuery] string? orderBy , [FromQuery]string? searchTerm , [FromQuery]string? brands , [FromQuery]string? types)
         {
             CheckControllerData();
             try 
             {
-                APIResponse<List<GetProductDTO>> response = await productService.GetAllProducts();
+                APIResponse<List<GetProductDTO>> response = await productService.GetAllProducts(orderBy,searchTerm,brands,types);
 
                 ProvideLog(response.GetResponseInfo());
 

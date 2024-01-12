@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SkiStore.API.Context;
 using SkiStore.API.DTOs.SkiStoreDB.Product;
+using SkiStore.API.Extensions;
 using SkiStore.API.Models.API;
 
 namespace SkiStore.API.Services.SkiStoreDB
@@ -17,11 +18,19 @@ namespace SkiStore.API.Services.SkiStoreDB
             this.mapper = mapper;
         }
 
-        public async Task<APIResponse<List<GetProductDTO>>> GetAllProducts()
+        public async Task<APIResponse<List<GetProductDTO>>> GetAllProducts(string? orderBy , string? searchTerm , string? brands , string? types)
         {
             try 
             {
-                List<Models.SkiStoreDB.Product.Product> raw_Products = await context.Products.ToListAsync();
+
+                IQueryable<Models.SkiStoreDB.Product.Product>
+                    query =  context.Products
+                    .Sort(orderBy)
+                    .Search(searchTerm)
+                    .Filter(brands,types)
+                    .AsQueryable();
+
+                List<Models.SkiStoreDB.Product.Product> raw_Products = await query.ToListAsync();
 
                 List<GetProductDTO> products =mapper.Map<List<GetProductDTO>>(raw_Products);
 
