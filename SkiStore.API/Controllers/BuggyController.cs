@@ -3,91 +3,42 @@ using SkiStore.API.Models.API;
 
 namespace SkiStore.API.Controllers;
 
-public class BuggyController:BaseApiController
+[ApiController]
+[Route("buggy")]
+public class BuggyController : ControllerBase
 {
-
-
     [HttpGet("bad-request")]
+    [ProducesResponseType(typeof(ProblemDetails), 400)]
     public ActionResult<APIResponse<string>> GetBadRequest()
     {
-        
-            CheckControllerData();
-
-            APIResponse<string> APIResponse = new()
-            {
-                Data = string.Empty,
-                StatusCode = 400,
-                IsSuccessful = false,
-                ErrorMessage = "This is an example of a bad request"
-            };
-
-            ProvideLog(APIResponse.GetResponseInfo());
-
-            return DetermineResponseType(APIResponse);
-        
+        return Problem("Bad Request", "buggy/bad-request", 400, "Buggy Controller");
     }
 
     [HttpGet("not-found")]
+    [ProducesResponseType(typeof(ProblemDetails), 404)]
     public ActionResult<APIResponse<string>> GetNotFound()
     {
-
-        CheckControllerData();
-
-        APIResponse<string> APIResponse = new()
-        {
-            Data = string.Empty,
-            StatusCode = 404,
-            IsSuccessful = false,
-            ErrorMessage = "This is an example of a not found"
-        };
-
-        ProvideLog(APIResponse.GetResponseInfo());
-
-        return DetermineResponseType(APIResponse);
-
+        return Problem("Not Found", "buggy/not-found", 404, "Buggy Controller");
     }
 
     [HttpGet("unauthorized")]
+    [ProducesResponseType(typeof(ProblemDetails), 401)]
     public ActionResult<APIResponse<string>> GetUnauthorized()
     {
-
-        CheckControllerData();
-
-        APIResponse<string> APIResponse = new()
-        {
-            Data = string.Empty,
-            StatusCode = 401,
-            IsSuccessful = false,
-            ErrorMessage = "This is an example of unauthorized"
-        };
-
-        ProvideLog(APIResponse.GetResponseInfo());
-
-        return DetermineResponseType(APIResponse);
-
+        return Problem("Unauthorized", "buggy/unauthorized", 401, "Buggy Controller");
     }
 
     [HttpGet("server-error")]
+    [ProducesResponseType(typeof(ProblemDetails), 500)]
     public ActionResult GetServerError()
     {
-        throw new Exception("This is a server error !");
+        return Problem("Exception", "buggy/server-error", 500, "Buggy Controller");
     }
 
     [HttpGet("custom-server-error")]
-    public ActionResult <APIResponse<string>> GetCustomServerError() 
+    [ProducesErrorResponseType(typeof(AppException))]
+    public ActionResult<APIResponse<string>> GetCustomServerError()
     {
-        CheckControllerData();
-
-        APIResponse<string> APIResponse = new()
-        {
-            Data = string.Empty,
-            StatusCode = 500,
-            IsSuccessful = false,
-            ErrorMessage = "This is an example of custom exception"
-        };
-
-        ProvideLog(APIResponse.GetResponseInfo());
-
-        return DetermineResponseType(APIResponse);
+        throw new Exception("This is a server error !");
     }
 }

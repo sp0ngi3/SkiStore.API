@@ -6,31 +6,31 @@ namespace SkiStore.API.Middleware;
 
 public class ExceptionMiddleware
 {
-    private readonly RequestDelegate next;
-    private readonly ILogger<ExceptionMiddleware> logger;
-    private readonly IHostEnvironment env;
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly IHostEnvironment _env;
 
     public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
     {
-        this.next = next;
-        this.logger = logger;
-        this.env = env;
+        this._next = next;
+        this._logger = logger;
+        this._env = env;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await next(context);
+            await _next(context);
         }
         catch (UnauthorizedAccessException ex)
         {
-            logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, ex.Message);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            AppException response = env.IsDevelopment()
+            AppException response = _env.IsDevelopment()
                 ? new AppException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
                 : new AppException(context.Response.StatusCode, "Internal Server Error");
 
@@ -42,12 +42,12 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, ex.Message);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            AppException response = env.IsDevelopment()
+            AppException response = _env.IsDevelopment()
                 ? new AppException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
                 : new AppException(context.Response.StatusCode, "Internal Server Error");
 

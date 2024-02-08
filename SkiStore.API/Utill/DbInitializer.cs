@@ -7,9 +7,9 @@ namespace SkiStore.API.Utill
     {
         public static void Initialize(SkiStoreContext context)
         {
-            if(context.Products.Any()) { return; }
+            if (context.Products.Any()) { return; }
 
-            List<Product> products =new()
+            List<Product> products = new()
             {
                 new Product
                 {
@@ -208,7 +208,7 @@ namespace SkiStore.API.Utill
                     QuantityInStock = 100
                 }
             };
-           
+
             context.Products.AddRange(products);
 
             context.SaveChanges();

@@ -16,7 +16,9 @@ namespace SkiStore.API.Extensions
             // Basket
 
             CreateMap<Basket,ReturnBasketDTO>().ReverseMap();
-            CreateMap<BasketItem,BasketItemDTO>().ReverseMap(); 
+            CreateMap<BasketItem,BasketItemDTO>().ReverseMap();
+
+            
         }
     }
 }

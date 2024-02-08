@@ -4,7 +4,7 @@ namespace SkiStore.API.Extensions;
 
 public static class ProductExtensions
 {
-    public static IQueryable<Product> Sort(this IQueryable<Product> query , string orderBy)
+    public static IQueryable<Product> Sort(this IQueryable<Product> query, string orderBy)
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -21,23 +21,23 @@ public static class ProductExtensions
         return query;
     }
 
-    public static IQueryable<Product> Search(this IQueryable<Product> query , string searchTearm)
+    public static IQueryable<Product> Search(this IQueryable<Product> query, string searchTearm)
     {
         if (string.IsNullOrEmpty(searchTearm)) return query;
 
-        string lowerCaseSearchTerm =searchTearm.Trim().ToLower();
+        string lowerCaseSearchTerm = searchTearm.Trim().ToLower();
 
         return query.Where(p => p.Name.ToLower().Contains(lowerCaseSearchTerm));
     }
 
-    public static IQueryable<Product> Filter(this IQueryable<Product> query , string brands , string types)
+    public static IQueryable<Product> Filter(this IQueryable<Product> query, string brands, string types)
     {
-        List<string> brandList =new();
+        List<string> brandList = new();
         List<string> typeList = new();
 
-        if(!string.IsNullOrEmpty(brands))
+        if (!string.IsNullOrEmpty(brands))
         {
-            brandList.AddRange(brands.ToLower().Split(",").ToList());    
+            brandList.AddRange(brands.ToLower().Split(",").ToList());
         }
 
         if (!string.IsNullOrEmpty(types))
@@ -45,7 +45,7 @@ public static class ProductExtensions
             typeList.AddRange(types.ToLower().Split(",").ToList());
         }
 
-        query=query.Where(p=>brandList.Count==0 || brandList.Contains(p.Brand.ToLower()));
+        query = query.Where(p => brandList.Count == 0 || brandList.Contains(p.Brand.ToLower()));
 
         query = query.Where(p => typeList.Count == 0 || typeList.Contains(p.Type.ToLower()));
 

@@ -4,22 +4,20 @@ using SkiStore.API.Context;
 using SkiStore.API.DTOs.SkiStoreDB.Basket;
 using SkiStore.API.Models.API;
 using SkiStore.API.Models.SkiStoreDB.Basket;
+using SkiStore.API.Models.SkiStoreDB.Product;
 
 namespace SkiStore.API.Services.SkiStoreDB;
 
 public class BasketService
 {
-    private readonly SkiStoreContext context;
-    private readonly IMapper mapper;
+    private readonly SkiStoreContext _context;
+    private readonly IMapper _mapper;
 
     public BasketService(SkiStoreContext context, IMapper mapper)
     {
-        this.context = context;
-        this.mapper = mapper;
+        this._context = context;
+        this._mapper = mapper;
     }
-
-
-
     public async Task<APIResponse<ReturnBasketDTO>> GetBasket(string buyerID)
     {
         try
@@ -35,7 +33,7 @@ public class BasketService
                 return APIResponse;
             }
 
-            Models.SkiStoreDB.Basket.Basket? basket = await FetchBasket(buyerID);
+            Basket? basket = await FetchBasket(buyerID);
 
             if (basket == null)
             {
@@ -46,7 +44,7 @@ public class BasketService
                 return APIResponse;
             }
 
-            ReturnBasketDTO basketDTO = mapper.Map<ReturnBasketDTO>(basket);
+            ReturnBasketDTO basketDTO = _mapper.Map<ReturnBasketDTO>(basket);
 
             APIResponse.IsSuccessful = true;
             APIResponse.StatusCode = 200;
@@ -70,17 +68,15 @@ public class BasketService
         }
     }
 
-
-
     public async Task<APIResponse<string>> AddItemToBasket(string buyerID, int productId, int quantity)
     {
         try
         {
             APIResponse<string> APIResponse = new();
 
-            Models.SkiStoreDB.Basket.Basket? basket = await FetchBasket(buyerID) ?? CreateBasket();
+            Basket? basket = await FetchBasket(buyerID) ?? CreateBasket();
 
-            Models.SkiStoreDB.Product.Product? product = await context.Products.FindAsync(productId);
+            Product? product = await _context.Products.FindAsync(productId);
 
             if (product == null)
             {
@@ -93,13 +89,13 @@ public class BasketService
 
             basket.AddItem(product, quantity);
 
-            bool changesMade = await context.SaveChangesAsync() > 0;
+            bool changesMade = await _context.SaveChangesAsync() > 0;
 
             if (changesMade)
             {
                 APIResponse.IsSuccessful = true;
                 APIResponse.StatusCode = 201;
-                APIResponse.SuccessMessage = $"ITEM {productId} ADDED TO BASKET";
+                APIResponse.SuccessMessage = $"PRODUCT ID :      {productId} ADDED TO BASKET";
                 APIResponse.Data = basket.BuyerId.ToString();
 
                 return APIResponse;
@@ -128,11 +124,11 @@ public class BasketService
         }
     }
 
-    public async Task<APIResponse<bool>> RemoveBasketItem(string buyerID, int productId, int quantity)
+    public async Task<APIResponse<string>> RemoveBasketItem(string buyerID, int productId, int quantity)
     {
         try
         {
-            APIResponse<bool> APIResponse = new();
+            APIResponse<string> APIResponse = new();
 
             if (buyerID == null)
             {
@@ -152,16 +148,16 @@ public class BasketService
                 APIResponse.ErrorMessage = $"- BASKET NOT FOUND";
             }
 
-            basket.RemoveItem(productId, quantity);
+            basket!.RemoveItem(productId, quantity);
 
-            bool changesMade = await context.SaveChangesAsync() > 0;
+            bool changesMade = await _context.SaveChangesAsync() > 0;
 
             if (changesMade)
             {
                 APIResponse.IsSuccessful = true;
                 APIResponse.StatusCode = 200;
-                APIResponse.SuccessMessage = $"ITEM {productId} REMOVED FROM THE BASKET";
-                APIResponse.Data = true;
+                APIResponse.SuccessMessage = $"PRODUCT ID:  {productId} REMOVED FROM THE BASKET";
+                APIResponse.Data = $"PRODUCT ID :  {productId} REMOVED FROM THE BASKET";
                 return APIResponse;
             }
             else
@@ -176,11 +172,11 @@ public class BasketService
         }
         catch (Exception ex)
         {
-            APIResponse<bool> APIResponse = new()
+            APIResponse<string> APIResponse = new()
             {
                 StatusCode = 500,
                 ErrorMessage = "-" + ex.Message,
-                Data = false,
+                Data = null,
                 IsSuccessful = true
             };
 
@@ -192,24 +188,21 @@ public class BasketService
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(BuyerID) || BuyerID == null || BuyerID.ToLower()=="undefined")
+            if (string.IsNullOrWhiteSpace(BuyerID) || BuyerID == null || BuyerID.ToLower() == "undefined")
             {
                 return null;
             }
 
-            return await context.Baskets
-          .Include(i => i.Items)
-          .ThenInclude(p => p.Product)
-          .FirstOrDefaultAsync(basket => basket.BuyerId == BuyerID);
+            return await _context.Baskets
+           .Include(i => i.Items)
+           .ThenInclude(p => p.Product)
+           .FirstOrDefaultAsync(basket => basket.BuyerId == BuyerID);
 
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);  
             return null;
         }
-
-
     }
 
     private Basket CreateBasket()
@@ -221,7 +214,7 @@ public class BasketService
 
         Basket basket = new() { BuyerId = buyerId };
 
-        context.Baskets.Add(basket);
+        _context.Baskets.Add(basket);
 
         return basket;
     }
