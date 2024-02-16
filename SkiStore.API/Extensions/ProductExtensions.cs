@@ -1,4 +1,4 @@
-﻿using SkiStore.API.Models.SkiStoreDB.Product;
+﻿using SkiStore.API.Models.SkiStoreDB;
 
 namespace SkiStore.API.Extensions;
 

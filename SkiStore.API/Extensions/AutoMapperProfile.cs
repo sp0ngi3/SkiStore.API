@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using SkiStore.API.DTOs.SkiStoreDB.Basket;
 using SkiStore.API.DTOs.SkiStoreDB.Product;
-using SkiStore.API.Models.SkiStoreDB.Basket;
-using SkiStore.API.Models.SkiStoreDB.Product;
+using SkiStore.API.Models.SkiStoreDB;
 
 namespace SkiStore.API.Extensions
 {

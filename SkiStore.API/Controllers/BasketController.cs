@@ -34,7 +34,8 @@ public class BasketController : ControllerBase
     /// <response code="404">The Basket was not found</response>
     /// <response code="500">General Error</response>
     [HttpGet("{buyerId}")]
-    [ProducesResponseType(typeof(ActionResult<ReturnBasketDTO>), 200)]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ReturnBasketDTO), 200)]
     [ProducesResponseType(typeof(ProblemDetails), 400)]
     [ProducesResponseType(typeof(ProblemDetails), 404)]
     [ProducesResponseType(typeof(ProblemDetails), 500)]
@@ -60,7 +61,8 @@ public class BasketController : ControllerBase
     }
 
     [HttpPost("{buyerId}")]
-    [ProducesResponseType(typeof(ActionResult<string>), 201)]
+    [Produces("text/plain")]
+    [ProducesResponseType(typeof(string), 201)]
     [ProducesResponseType(typeof(ProblemDetails), 400)]
     [ProducesResponseType(typeof(ProblemDetails), 404)]
     [ProducesResponseType(typeof(ProblemDetails), 500)]
@@ -110,7 +112,8 @@ public class BasketController : ControllerBase
     /// <response code="404">The Basket was not found</response>
     /// <response code="500">General Error</response>
     [HttpDelete("{buyerId}")]
-    [ProducesResponseType(typeof(ActionResult<string>), 200)]
+    [Produces("text/plain")]
+    [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(typeof(ProblemDetails), 400)]
     [ProducesResponseType(typeof(ProblemDetails), 404)]
     [ProducesResponseType(typeof(ProblemDetails), 500)]

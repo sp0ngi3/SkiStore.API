@@ -4,7 +4,7 @@ using SkiStore.API.Context;
 using SkiStore.API.DTOs.SkiStoreDB.Product;
 using SkiStore.API.Extensions;
 using SkiStore.API.Models.API;
-using SkiStore.API.Models.SkiStoreDB.Product;
+using SkiStore.API.Models.SkiStoreDB;
 using SkiStore.API.RequestHelpers;
 
 namespace SkiStore.API.Services.SkiStoreDB

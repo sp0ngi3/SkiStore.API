@@ -2,10 +2,10 @@
 using SkiStore.API.DTOs.SkiStoreDB.Product;
 using SkiStore.API.Extensions;
 using SkiStore.API.Models.API;
-using SkiStore.API.Models.SkiStoreDB.Product;
+using SkiStore.API.Models.SkiStoreDB;
 using SkiStore.API.RequestHelpers;
 using SkiStore.API.Services.SkiStoreDB;
-using System.Text.Json;
+
 
 namespace SkiStore.API.Controllers
 {
@@ -40,7 +40,8 @@ namespace SkiStore.API.Controllers
         /// <response code="200">The Products were found and returned</response>
         /// <response code="500">General Error</response>
         [HttpGet]
-        [ProducesResponseType(typeof(ActionResult<PagedList<GetProductDTO>>), 200)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(PagedList<GetProductDTO>), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 500)]
         [ProducesErrorResponseType(typeof(ProblemDetails))]
         public async Task<ActionResult<PagedList<GetProductDTO>>> GetAllProducts([FromQuery] ProductParams productParams)
@@ -83,7 +84,8 @@ namespace SkiStore.API.Controllers
         /// <response code="500">General Error</response>
 
         [HttpGet("{productID}")]
-        [ProducesResponseType(typeof(ActionResult<GetProductDTO>), 200)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(GetProductDTO), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 404)]
         [ProducesResponseType(typeof(ProblemDetails), 500)]
         [ProducesErrorResponseType(typeof(ProblemDetails))]
@@ -119,7 +121,8 @@ namespace SkiStore.API.Controllers
         /// <response code="200">The Product Filters were found and returned</response>
         /// <response code="500">General Error</response>
         [HttpGet("filters")]
-        [ProducesResponseType(typeof(ActionResult<ProductFilters>), 200)]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ProductFilters), 200)]
         [ProducesResponseType(typeof(ProblemDetails), 500)]
         [ProducesErrorResponseType(typeof(ProblemDetails))]
         public async Task<ActionResult<ProductFilters>> GetProductFilters()

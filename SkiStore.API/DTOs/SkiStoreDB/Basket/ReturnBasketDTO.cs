@@ -1,6 +1,4 @@
-﻿using SkiStore.API.Models.SkiStoreDB.Basket;
-
-namespace SkiStore.API.DTOs.SkiStoreDB.Basket;
+﻿namespace SkiStore.API.DTOs.SkiStoreDB.Basket;
 
 public class ReturnBasketDTO
 {

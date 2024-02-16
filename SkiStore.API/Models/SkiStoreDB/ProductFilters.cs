@@ -1,4 +1,4 @@
-﻿namespace SkiStore.API.Models.SkiStoreDB.Product;
+﻿namespace SkiStore.API.Models.SkiStoreDB;
 
 public class ProductFilters
 {

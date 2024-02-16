@@ -1,4 +1,4 @@
-﻿namespace SkiStore.API.Models.SkiStoreDB.Basket;
+﻿namespace SkiStore.API.Models.SkiStoreDB;
 
 public class Basket
 {
@@ -8,7 +8,7 @@ public class Basket
 
     public List<BasketItem> Items { get; set; } = new();
 
-    public void AddItem(Models.SkiStoreDB.Product.Product product, int quantity)
+    public void AddItem(Product product, int quantity)
     {
         if (!Items.All(item => item.ProductId != product.Id))
         {

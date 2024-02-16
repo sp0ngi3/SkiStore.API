@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SkiStore.API.Context;
 using SkiStore.API.DTOs.SkiStoreDB.Basket;
 using SkiStore.API.Models.API;
-using SkiStore.API.Models.SkiStoreDB.Basket;
-using SkiStore.API.Models.SkiStoreDB.Product;
+using SkiStore.API.Models.SkiStoreDB;
 
 namespace SkiStore.API.Services.SkiStoreDB;
 
