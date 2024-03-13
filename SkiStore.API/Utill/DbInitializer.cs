@@ -1,12 +1,35 @@
-﻿using SkiStore.API.Context;
+﻿using Microsoft.AspNetCore.Identity;
+using SkiStore.API.Context;
 using SkiStore.API.Models.SkiStoreDB;
 
 namespace SkiStore.API.Utill
 {
     public static class DbInitializer
     {
-        public static void Initialize(SkiStoreContext context)
+        public static async Task Initialize(SkiStoreContext context , UserManager<User> userManager)
         {
+            if(!userManager.Users.Any()) 
+            {
+                User user = new()
+                {
+                    UserName = "bob",
+                    Email = "bob@test.com"
+                };
+
+                await userManager.CreateAsync(user,"Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, "Member");
+
+
+                User admin = new()
+                {
+                    UserName = "admin",
+                    Email = "admin@test.com"
+                };
+
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
+                await userManager.AddToRolesAsync(admin, new[] { "Member", "Admin" });
+            }
+
             if (context.Products.Any()) { return; }
 
             List<Product> products = new()

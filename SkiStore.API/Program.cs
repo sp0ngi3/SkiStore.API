@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using SkiStore.API.Context;
 using SkiStore.API.Middleware;
+using SkiStore.API.Models.SkiStoreDB;
 using SkiStore.API.Services.SkiStoreDB;
 using SkiStore.API.Utill;
 
@@ -32,6 +34,11 @@ builder.Logging.AddNLog("NLog.config");
 builder.Services.AddDbContext<SkiStoreContext>(options =>
 options.UseSqlite("Data source=skistore.db"));
 
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<SkiStoreContext>();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 WebApplication app = builder.Build();
 
@@ -61,10 +68,11 @@ app.MapControllers();
 IServiceScope scope = app.Services.CreateScope();
 SkiStoreContext context = scope.ServiceProvider.GetRequiredService<SkiStoreContext>();
 ILogger<Program> logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+UserManager<User> userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 try
 {
-    context.Database.Migrate();
-    DbInitializer.Initialize(context);
+    await context.Database.MigrateAsync();
+    await DbInitializer.Initialize(context,userManager);
 }
 catch (Exception ex)
 {
